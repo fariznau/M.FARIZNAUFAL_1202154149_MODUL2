@@ -23,7 +23,7 @@ public class DaftarMenu extends AppCompatActivity {
     private String[] Harga = {"Rp.10000","Rp.5000","Rp.2000"};
     private String[] Keterangan = {"Mie Kuning","indomie goreng dan telur","telur"};
     //Daftar Gambar
-    private int[] Gambar = {R.drawable.seblak, R.drawable.indomie, R.drawable.telurgulung};
+    private int[] Gambar = {R.drawable.ic_launcher_background, R.drawable.indomie, R.drawable.ic_launcher_foreground};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

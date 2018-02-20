@@ -1,108 +1,118 @@
 package android.example.com.mfariznaufal_1202154149_modul2;
 
 import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.design.widget.Snackbar;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link RecyclerViewAdapter.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link RecyclerViewAdapter#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class RecyclerViewAdapter extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+import java.util.ArrayList;
 
-    private OnFragmentInteractionListener mListener;
 
-    public RecyclerViewAdapter() {
-        // Required empty public constructor
+
+//Class Adapter ini Digunakan Untuk Mengatur Bagaimana Data akan Ditampilkan
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
+
+    private Context mContext;
+    private ArrayList<String> namaList; //Digunakan untuk Judul
+    private ArrayList<String> hargaList; //Digunakan untuk Judul
+    private ArrayList<String> keteranganList; //Digunakan untuk Judul
+    private ArrayList<Integer> imageList; //Digunakan untuk Image/Gambar
+
+    //Membuat Konstruktor pada Class RecyclerViewAdapter
+    RecyclerViewAdapter(ArrayList<String> namaList, ArrayList<String> hargaList ,ArrayList<String> keteranganList , ArrayList<Integer> imageList){
+        this.namaList = namaList;
+        this.hargaList = hargaList;
+        this.keteranganList = keteranganList;
+        this.imageList = imageList;
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment RecyclerViewAdapter.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static RecyclerViewAdapter newInstance(String param1, String param2) {
-        RecyclerViewAdapter fragment = new RecyclerViewAdapter();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    //ViewHolder Digunakan Untuk Menyimpan Referensi Dari View-View
+    class ViewHolder extends RecyclerView.ViewHolder{
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+        private TextView nama, harga;
+        private ImageView gambar;
+        private RelativeLayout ItemList;
+
+        ViewHolder(View itemView) {
+            super(itemView);
+            //Menginisialisasi View-View untuk kita gunakan pada RecyclerView
+            nama = itemView.findViewById(R.id.txt_makanan);
+            harga = itemView.findViewById(R.id.txt_harga);
+            gambar = itemView.findViewById(R.id.gambar_makanan);
+            ItemList = itemView.findViewById(R.id.item_list);
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_recycler_view_adapter, container, false);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        //Membuat View untuk Menyiapkan dan Memasang Layout yang Akan digunakan pada RecyclerView
+        View V = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_menu, parent, false);
+        ViewHolder VH = new ViewHolder(V);
+        return VH;
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+    public void onBindViewHolder(ViewHolder holder, final int position) {
+
+        //Memanggil Nilai/Value Pada View-View Yang Telah Dibuat pada Posisi Tertentu
+        final String Nama = namaList.get(position);//Mengambil data sesuai dengan posisi yang telah ditentukan
+        final String komposisi = keteranganList.get(position);
+        final int setGambar=imageList.get(position);
+        final String Harga = hargaList.get(position);
+        holder.nama.setText(Nama);
+        holder.harga.setText(Harga);
+        holder.gambar.setImageResource(imageList.get(position)); // Mengambil gambar sesuai posisi yang telah ditentukan
+        //Membuat Aksi Saat Judul Pada List ditekan
+
+        holder.nama.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, String.valueOf(setGambar), Snackbar.LENGTH_SHORT).show();
+                Bundle b = new Bundle();
+                Intent intent = new Intent(view.getContext(), DetailMenu.class);
+                b.putString("Nama",Nama);
+                b.putString("Harga",Harga);
+                b.putString("Keterangan",komposisi);
+                b.putInt("Gambar",setGambar);
+                intent.putExtras(b);
+                view.getContext().startActivity(intent);
+            }
+        });
+        //Membuat Aksi Saat List Ditekan
+        holder.ItemList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle b = new Bundle();
+                Intent intent = new Intent(view.getContext(), DetailMenu.class);
+                b.putString("Nama",Nama);
+                b.putString("Harga",Harga);
+                b.putString("Keterangan",komposisi);
+                b.putInt("Gambar",setGambar);
+                intent.putExtras(b);
+                view.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    public int getItemCount() {
+        //Menghitung Ukuran/Jumlah Data Yang Akan Ditampilkan Pada RecyclerView
+        return namaList.size();
+    }
+    public void getIntent(){
+
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 }

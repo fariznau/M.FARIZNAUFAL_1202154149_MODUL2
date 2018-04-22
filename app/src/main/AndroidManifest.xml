@@ -18,7 +18,6 @@
         </activity>
         <activity android:name=".DineIn" />
         <activity android:name=".DetailMenu" />
-        <activity android:name=".DatePickerFragment" />
         <activity android:name=".DaftarMenu" />
         <activity android:name=".SplashScreen" />
         <activity android:name=".TakeAway" />
